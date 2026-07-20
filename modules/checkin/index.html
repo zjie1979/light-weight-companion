@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f5f1e8" />
+    <meta name="description" content="两套饮食计划、每日三餐打卡与体重趋势记录。数据仅保存在本机浏览器。" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="轻盈生活" />
+    <link rel="manifest" href="../../manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+    <link rel="icon" href="../../icon-192.png" />
+    <link rel="stylesheet" href="../../shared/companion-shell.css" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>轻盈打卡｜饮食与体重记录</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" id="greeting">今天也照顾好自己</p>
+          <h1>轻盈打卡</h1>
+        </div>
+        <button class="icon-button" id="installHelpButton" type="button" aria-label="安装到主屏幕">
+          <span aria-hidden="true">↗</span>
+        </button>
+      </header>
+
+      <main>
+        <section class="view active" id="checkinView" data-view="checkin">
+          <div class="date-strip">
+            <button class="date-nav" id="previousDate" type="button" aria-label="前一天">‹</button>
+            <label class="date-label">
+              <span id="friendlyDate">今天</span>
+              <input id="recordDate" type="date" aria-label="选择打卡日期" />
+            </label>
+            <button class="date-nav" id="nextDate" type="button" aria-label="后一天">›</button>
+          </div>
+
+          <article class="hero-card">
+            <div class="hero-copy">
+              <span class="plan-chip" id="activePlanChip">幸福五日食谱</span>
+              <h2 id="activeDayTitle">Day 1 · 从容开始</h2>
+              <p id="heroMessage">不用追求完美，完成一餐就是一步。</p>
+              <div class="hero-actions">
+                <label class="select-wrap">
+                  <span>计划</span>
+                  <select id="planSelect" aria-label="选择饮食计划"></select>
+                </label>
+                <label class="select-wrap compact">
+                  <span>天数</span>
+                  <select id="daySelect" aria-label="选择计划天数"></select>
+                </label>
+              </div>
+            </div>
+            <div class="progress-ring" id="progressRing" style="--progress: 0deg">
+              <div>
+                <strong id="progressPercent">0%</strong>
+                <span>今日进度</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="weight-card card">
+            <div>
+              <p class="card-kicker">晨起体重</p>
+              <h3 id="weightPrompt">记录今天的体重</h3>
+              <p class="muted" id="weightDelta">连续记录后会显示变化</p>
+            </div>
+            <div class="weight-entry">
+              <input id="weightInput" type="number" min="40" max="600" step="0.1" inputmode="decimal" placeholder="---.-" aria-label="体重（斤）" />
+              <span>斤</span>
+              <button id="saveWeightButton" type="button">保存</button>
+            </div>
+          </article>
+
+          <div class="section-heading">
+            <div>
+              <p class="card-kicker">今日菜单</p>
+              <h2>一餐一餐完成</h2>
+            </div>
+            <span id="mealCount">0 / 3</span>
+          </div>
+
+          <div class="meal-list" id="mealList"></div>
+
+          <article class="note-card card">
+            <label for="dailyNote">今天想记下什么</label>
+            <textarea id="dailyNote" rows="3" maxlength="160" placeholder="例如：午餐外食、今天有点饿、睡眠不错……"></textarea>
+            <div class="note-footer">
+              <span id="noteStatus">自动保存在本机</span>
+              <button id="saveNoteButton" class="text-button" type="button">保存备注</button>
+            </div>
+          </article>
+
+          <article class="health-note">
+            <span aria-hidden="true">♡</span>
+            <p><strong>温柔提醒</strong>　菜单按你提供的原图整理，仅用于个人打卡，不代表减重效果承诺，也不是个体化医疗或营养建议。身体不适时请停止执行并咨询专业人士。</p>
+          </article>
+        </section>
+
+        <section class="view" id="trendView" data-view="trend">
+          <div class="page-title">
+            <p class="eyebrow">慢慢来，会看见变化</p>
+            <h2>我的趋势</h2>
+          </div>
+
+          <div class="stat-grid">
+            <article class="stat-card">
+              <span>最新体重</span>
+              <strong id="latestWeight">--</strong>
+              <small>斤</small>
+            </article>
+            <article class="stat-card warm">
+              <span>累计变化</span>
+              <strong id="totalChange">--</strong>
+              <small>斤</small>
+            </article>
+            <article class="stat-card green">
+              <span>连续完整打卡</span>
+              <strong id="streakCount">0</strong>
+              <small>天</small>
+            </article>
+          </div>
+
+          <article class="chart-card card">
+            <div class="chart-header">
+              <div>
+                <p class="card-kicker">体重曲线</p>
+                <h3>最近 14 次记录</h3>
+              </div>
+              <span id="chartRange">暂无记录</span>
+            </div>
+            <div class="chart-wrap" id="weightChart" aria-label="体重趋势图"></div>
+          </article>
+
+          <div class="section-heading history-heading">
+            <div>
+              <p class="card-kicker">回顾</p>
+              <h2>最近打卡</h2>
+            </div>
+          </div>
+          <div class="history-list" id="historyList"></div>
+
+          <article class="data-card card">
+            <div>
+              <h3>我的数据</h3>
+              <p>饮食和体重只保存在当前浏览器。换手机或清理浏览器前，请先备份。</p>
+            </div>
+            <div class="data-actions">
+              <button id="exportButton" type="button">导出备份</button>
+              <label class="import-label">
+                恢复备份
+                <input id="importInput" type="file" accept="application/json" />
+              </label>
+            </div>
+          </article>
+        </section>
+
+        <section class="view" id="plansView" data-view="plans">
+          <div class="page-title">
+            <p class="eyebrow">来自你提供的两套食谱</p>
+            <h2>饮食计划</h2>
+          </div>
+
+          <div class="plan-cards" id="planCards"></div>
+
+          <article class="settings-card card">
+            <div>
+              <p class="card-kicker">循环设置</p>
+              <h3>当前计划起始日</h3>
+              <p>之后会按天数自动循环；你也可以在每日打卡页临时切换。</p>
+            </div>
+            <input id="startDateInput" type="date" aria-label="计划起始日" />
+          </article>
+
+          <div id="planDetails"></div>
+        </section>
+      </main>
+
+      <nav class="bottom-nav" aria-label="主要导航">
+        <button class="nav-item active" type="button" data-target="checkin">
+          <span aria-hidden="true">✓</span>
+          <strong>打卡</strong>
+        </button>
+        <button class="nav-item" type="button" data-target="trend">
+          <span aria-hidden="true">⌁</span>
+          <strong>趋势</strong>
+        </button>
+        <button class="nav-item" type="button" data-target="plans">
+          <span aria-hidden="true">≡</span>
+          <strong>计划</strong>
+        </button>
+      </nav>
+    </div>
+
+    <dialog id="installDialog">
+      <form method="dialog">
+        <button class="dialog-close" aria-label="关闭">×</button>
+        <div class="dialog-icon">↗</div>
+        <h2>添加到 iPhone 主屏幕</h2>
+        <ol>
+          <li>请先用 <strong>Safari</strong> 打开本应用。</li>
+          <li>点击浏览器底部的“分享”按钮。</li>
+          <li>向下滑动，选择“添加到主屏幕”。</li>
+          <li>点击右上角“添加”，以后就能像 App 一样打开。</li>
+        </ol>
+        <p>如果从微信打开，请先点右上角菜单，选择“在 Safari 中打开”。</p>
+        <button class="primary-button" value="close">知道了</button>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="../../shared/companion-shell.js" defer></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
