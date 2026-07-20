@@ -1,9 +1,9 @@
-const CACHE_NAME = "light-weight-companion-v2";
+const CACHE_NAME = "light-weight-companion-v3";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=1",
-  "./app.js?v=2",
+  "./styles.css?v=3",
+  "./app.js?v=3",
   "./manifest.webmanifest",
   "./apple-touch-icon.png",
   "./icon-192.png",
