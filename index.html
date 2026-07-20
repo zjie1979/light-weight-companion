@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f6f1e8" />
+    <meta name="description" content="把餐单打卡、饮食称重、晚餐体重判断和三日饮食循环放在一个 iPhone 主屏幕应用中。数据仅保存在本机。" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="轻盈生活" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
+    <link rel="stylesheet" href="./styles.css?v=1" />
+    <title>轻盈生活｜饮食与体重助手</title>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero-topline">
+          <span class="privacy-chip"><i aria-hidden="true"></i> 数据仅存本机</span>
+          <button class="install-button" id="installOpen" type="button">安装方法</button>
+        </div>
+        <p class="eyebrow" id="greeting">今天也照顾好自己</p>
+        <h1>轻盈生活</h1>
+        <p class="hero-copy">四个轻量工具，一个入口。按今天最需要的事情开始。</p>
+        <div class="hero-date" id="todayLabel"></div>
+      </header>
+
+      <main>
+        <section aria-labelledby="overviewTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">TODAY</p>
+              <h2 id="overviewTitle">今日总览</h2>
+            </div>
+            <span class="refresh-note">打开模块后自动更新</span>
+          </div>
+
+          <div class="module-grid">
+            <a class="module-card checkin-card" href="./modules/checkin/" data-module="checkin">
+              <div class="module-icon" aria-hidden="true">✓</div>
+              <div class="module-copy">
+                <div class="module-title-row"><h3>餐单打卡</h3><span>每日</span></div>
+                <p>按食谱完成三餐，记录体重和趋势。</p>
+                <strong class="module-status" id="checkinStatus">今天还未开始</strong>
+              </div>
+              <span class="module-arrow" aria-hidden="true">›</span>
+            </a>
+
+            <a class="module-card weight-card" href="./modules/weight-log/" data-module="weight-log">
+              <div class="module-icon" aria-hidden="true">g</div>
+              <div class="module-copy">
+                <div class="module-title-row"><h3>饮食称重</h3><span>650g</span></div>
+                <p>按食物类型折算，支持带壳食物补录。</p>
+                <strong class="module-status" id="weightStatus">今天还没有记录</strong>
+              </div>
+              <span class="module-arrow" aria-hidden="true">›</span>
+            </a>
+
+            <a class="module-card dinner-card" href="./modules/dinner/" data-module="dinner">
+              <div class="module-icon" aria-hidden="true">秤</div>
+              <div class="module-copy">
+                <div class="module-title-row"><h3>晚饭秤</h3><span>早晚</span></div>
+                <p>扣除衣服重量，按净差值查看晚餐建议。</p>
+                <strong class="module-status" id="dinnerStatus">等待今天的早晚体重</strong>
+              </div>
+              <span class="module-arrow" aria-hidden="true">›</span>
+            </a>
+
+            <a class="module-card loop-card" href="./modules/loop/" data-module="loop">
+              <div class="module-icon" aria-hidden="true">3</div>
+              <div class="module-copy">
+                <div class="module-title-row"><h3>三日轻盈循环</h3><span>16+8</span></div>
+                <p>每天两顿主餐，可选早餐，完成三天进入下一轮。</p>
+                <strong class="module-status" id="loopStatus">DAY 1 · 0 / 2 餐</strong>
+              </div>
+              <span class="module-arrow" aria-hidden="true">›</span>
+            </a>
+          </div>
+        </section>
+
+        <section class="data-card" aria-labelledby="dataTitle">
+          <div>
+            <p class="section-kicker">LOCAL DATA</p>
+            <h2 id="dataTitle">统一备份</h2>
+            <p>一次导出四个模块的数据。换手机或清理 Safari 前，建议先备份。</p>
+          </div>
+          <div class="data-actions">
+            <button class="secondary-button" id="exportAll" type="button">导出全部数据</button>
+            <label class="secondary-button file-button" for="importAll">恢复备份</label>
+            <input id="importAll" type="file" accept="application/json,.json" />
+          </div>
+          <p class="data-message" id="dataMessage" role="status"></p>
+        </section>
+
+        <section class="about-card">
+          <div class="about-icon" aria-hidden="true">⌂</div>
+          <div>
+            <h2>这是一个公开网页 App</h2>
+            <p>不需要账号，也没有服务器数据库。网页代码公开，但你填写的体重、饮食和备注只保存在当前浏览器里。</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="installDialog">
+      <form method="dialog">
+        <button class="dialog-close" value="close" aria-label="关闭">×</button>
+        <div class="dialog-mark" aria-hidden="true">↗</div>
+        <h2>添加到 iPhone 主屏幕</h2>
+        <ol>
+          <li><span>1</span><p>用 <strong>Safari</strong> 打开本应用。</p></li>
+          <li><span>2</span><p>点击底部的 <strong>分享</strong> 按钮。</p></li>
+          <li><span>3</span><p>向下滑动，选择 <strong>添加到主屏幕</strong>。</p></li>
+          <li><span>4</span><p>点击右上角 <strong>添加</strong>。</p></li>
+        </ol>
+        <p class="install-tip">如果从微信打开，请先从右上角菜单转到 Safari。</p>
+        <button class="primary-button" value="close">知道了</button>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js?v=2" defer></script>
+  </body>
+</html>
