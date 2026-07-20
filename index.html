@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#f6f1e8" />
-    <meta name="description" content="把餐单打卡、饮食称重、晚餐体重判断和三日饮食循环放在一个 iPhone 主屏幕应用中。数据仅保存在本机。" />
+    <meta name="description" content="把餐单打卡、三日轻盈循环、食物重量判断和晚饭秤放在一个 iPhone 主屏幕应用中。数据仅保存在本机。" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="轻盈生活" />
@@ -12,8 +12,8 @@
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
-    <link rel="stylesheet" href="./styles.css?v=1" />
-    <title>轻盈生活｜饮食与体重助手</title>
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <title>轻盈生活｜今日执行台</title>
   </head>
   <body>
     <div class="page-shell">
@@ -22,86 +22,150 @@
           <span class="privacy-chip"><i aria-hidden="true"></i> 数据仅存本机</span>
           <button class="install-button" id="installOpen" type="button">安装方法</button>
         </div>
-        <p class="eyebrow" id="greeting">今天也照顾好自己</p>
+        <p class="eyebrow" id="greeting">今日执行台</p>
         <h1>轻盈生活</h1>
-        <p class="hero-copy">四个轻量工具，一个入口。按今天最需要的事情开始。</p>
+        <p class="hero-copy">一张首页，安排今天的餐单、份量和晚饭。</p>
         <div class="hero-date" id="todayLabel"></div>
       </header>
 
       <main>
-        <section aria-labelledby="overviewTitle">
-          <div class="section-heading">
+        <section class="section-card flow-section" aria-labelledby="flowTitle">
+          <div class="section-heading flow-heading">
             <div>
-              <p class="section-kicker">TODAY</p>
-              <h2 id="overviewTitle">今日总览</h2>
+              <p class="section-kicker">TODAY'S FLOW</p>
+              <h2 id="flowTitle">今日执行</h2>
             </div>
-            <span class="refresh-note">打开模块后自动更新</span>
+            <label class="plan-select-label" for="planSelect">
+              <span>餐单</span>
+              <select id="planSelect" aria-label="选择餐单"></select>
+            </label>
           </div>
 
-          <div class="module-grid">
-            <a class="module-card checkin-card" href="./modules/checkin/" data-module="checkin">
-              <div class="module-icon" aria-hidden="true">✓</div>
-              <div class="module-copy">
-                <div class="module-title-row"><h3>餐单打卡</h3><span>每日</span></div>
-                <p>按食谱完成三餐，记录体重和趋势。</p>
-                <strong class="module-status" id="checkinStatus">今天还未开始</strong>
-              </div>
-              <span class="module-arrow" aria-hidden="true">›</span>
-            </a>
+          <div class="flow-summary">
+            <div class="cycle-badge"><span id="cycleDayPill">DAY 1</span><strong id="cycleRound">第 1 轮</strong></div>
+            <div class="flow-summary-copy">
+              <p class="summary-kicker" id="cycleSubtitle">轻断食 · 收拢</p>
+              <h3 id="cycleTitle">蛋白质日</h3>
+              <p id="cycleDescription">用清晰、简单的选择开启本轮。</p>
+            </div>
+            <label class="day-select-label" for="planDaySelect">
+              <span>餐单日</span>
+              <select id="planDaySelect" aria-label="选择餐单日"></select>
+            </label>
+          </div>
 
-            <a class="module-card weight-card" href="./modules/weight-log/" data-module="weight-log">
-              <div class="module-icon" aria-hidden="true">g</div>
-              <div class="module-copy">
-                <div class="module-title-row"><h3>饮食称重</h3><span>650g</span></div>
-                <p>按食物类型折算，支持带壳食物补录。</p>
-                <strong class="module-status" id="weightStatus">今天还没有记录</strong>
-              </div>
-              <span class="module-arrow" aria-hidden="true">›</span>
-            </a>
+          <div class="progress-pills" aria-label="今日进度">
+            <span class="progress-pill plan-progress">餐单打卡 <strong id="planProgress">0 / 3</strong></span>
+            <span class="progress-pill cycle-progress">循环正餐 <strong id="cycleProgress">0 / 2</strong></span>
+          </div>
 
-            <a class="module-card dinner-card" href="./modules/dinner/" data-module="dinner">
-              <div class="module-icon" aria-hidden="true">秤</div>
-              <div class="module-copy">
-                <div class="module-title-row"><h3>晚饭秤</h3><span>早晚</span></div>
-                <p>扣除衣服重量，按净差值查看晚餐建议。</p>
-                <strong class="module-status" id="dinnerStatus">等待今天的早晚体重</strong>
-              </div>
-              <span class="module-arrow" aria-hidden="true">›</span>
-            </a>
+          <div class="meal-flow" id="mealFlow"></div>
 
-            <a class="module-card loop-card" href="./modules/loop/" data-module="loop">
-              <div class="module-icon" aria-hidden="true">3</div>
-              <div class="module-copy">
-                <div class="module-title-row"><h3>三日轻盈循环</h3><span>16+8</span></div>
-                <p>每天两顿主餐，可选早餐，完成三天进入下一轮。</p>
-                <strong class="module-status" id="loopStatus">DAY 1 · 0 / 2 餐</strong>
-              </div>
-              <span class="module-arrow" aria-hidden="true">›</span>
-            </a>
+          <div class="cycle-footer">
+            <p id="cycleHint">完成循环的两顿正餐后，进入下一日。</p>
+            <button class="primary-button" id="completeCycleDay" type="button" disabled>完成今天，进入下一日</button>
+          </div>
+
+          <div class="note-row">
+            <textarea id="dailyNote" rows="2" maxlength="160" placeholder="今天想记下什么？例如：午餐外食、睡眠不错……" aria-label="今日备注"></textarea>
+            <button class="text-button" id="saveNote" type="button">保存备注</button>
           </div>
         </section>
 
-        <section class="data-card" aria-labelledby="dataTitle">
+        <section class="section-card body-weight-section" aria-labelledby="bodyWeightTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">MORNING WEIGHT</p>
+              <h2 id="bodyWeightTitle">晨起体重</h2>
+            </div>
+            <span class="section-note" id="bodyWeightStatus">连续记录后看变化</span>
+          </div>
+          <div class="inline-entry">
+            <input id="bodyWeight" type="number" min="40" max="600" step="0.1" inputmode="decimal" placeholder="---.-" aria-label="晨起体重（斤）" />
+            <span>斤</span>
+            <button class="secondary-button" id="saveBodyWeight" type="button">保存体重</button>
+          </div>
+        </section>
+
+        <section class="section-card food-section" aria-labelledby="foodTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">FOOD WEIGHT</p>
+              <h2 id="foodTitle">吃了多少，自动换算</h2>
+            </div>
+            <span class="section-note" id="foodTotal">0 / 650g</span>
+          </div>
+          <p class="section-intro">输入食物名称和重量，先按关键词自动判断固体、液体、坚果、酸奶/粥或果蔬；不准确时可以手动修正。</p>
+          <form class="food-form" id="foodForm">
+            <label>
+              <span>食物名称</span>
+              <input id="foodName" type="text" maxlength="30" placeholder="例如：牛奶、鸡蛋、香蕉" autocomplete="off" />
+            </label>
+            <label>
+              <span>实际重量</span>
+              <div class="unit-input"><input id="foodWeight" type="number" min="1" max="9999" step="0.1" inputmode="decimal" placeholder="0" /><em>克</em></div>
+            </label>
+            <div class="food-detection" id="foodDetection" role="status">将按名称自动判断类型</div>
+            <div class="type-grid" id="typeGrid" aria-label="食物类型">
+              <button type="button" class="type-option selected" data-type="solid">● 固体</button>
+              <button type="button" class="type-option" data-type="liquid">◒ 液体</button>
+              <button type="button" class="type-option" data-type="soft">◉ 酸奶 / 粥</button>
+              <button type="button" class="type-option" data-type="produce">✦ 果蔬</button>
+              <button type="button" class="type-option" data-type="nuts">◆ 坚果</button>
+            </div>
+            <div class="food-preview"><span id="foodPreviewLabel">本次计入</span><strong id="foodPreview">0 克</strong></div>
+            <button class="primary-button" type="submit">记下这餐重量</button>
+          </form>
+          <div class="food-records" id="foodRecords"></div>
+        </section>
+
+        <section class="section-card dinner-section" aria-labelledby="dinnerTitle">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">DINNER SCALE</p>
+              <h2 id="dinnerTitle">首页晚饭秤</h2>
+            </div>
+            <span class="section-note">早 − 晚 − 衣</span>
+          </div>
+          <p class="section-intro">扣除衣服重量后，看今天晚饭适合怎么吃。数字只在本机保存。</p>
+          <div class="dinner-inputs">
+            <label><span>早体重</span><div class="unit-input"><input id="morningWeight" type="number" min="40" max="600" step="0.1" inputmode="decimal" placeholder="---.-" /><em>斤</em></div></label>
+            <label><span>晚间秤重</span><div class="unit-input"><input id="eveningWeight" type="number" min="40" max="600" step="0.1" inputmode="decimal" placeholder="---.-" /><em>斤</em></div></label>
+            <label><span>衣服重量</span><div class="unit-input"><input id="clothingWeight" type="number" min="0" max="20" step="0.1" inputmode="decimal" placeholder="0" /><em>斤</em></div></label>
+          </div>
+          <p class="field-error" id="dinnerError" role="alert"></p>
+          <article class="dinner-result" id="dinnerResult">
+            <div class="result-empty" id="dinnerEmpty"><span aria-hidden="true">秤</span><strong>填完三个数字，就能看到建议</strong></div>
+            <div class="result-content" id="dinnerContent" hidden>
+              <div class="result-difference"><span>净差值</span><strong id="dinnerDifference">0.0 斤</strong></div>
+              <div class="result-copy"><span class="result-icon" id="dinnerIcon">饭</span><div><h3 id="dinnerRecommendation">吃正常晚饭</h3><p id="dinnerDetail"></p></div></div>
+              <p class="result-safety" id="dinnerSafety"></p>
+            </div>
+          </article>
+          <div class="dinner-actions"><button class="secondary-button" id="saveDinner" type="button" disabled>保存今天的晚饭判断</button><span id="dinnerSaved" role="status"></span></div>
+        </section>
+
+        <section class="section-card backup-section" aria-labelledby="backupTitle">
           <div>
             <p class="section-kicker">LOCAL DATA</p>
-            <h2 id="dataTitle">统一备份</h2>
-            <p>一次导出四个模块的数据。换手机或清理 Safari 前，建议先备份。</p>
+            <h2 id="backupTitle">统一备份</h2>
+            <p class="section-intro">换手机或清理 Safari 前，一次导出今天所有模块的数据。</p>
           </div>
-          <div class="data-actions">
-            <button class="secondary-button" id="exportAll" type="button">导出全部数据</button>
-            <label class="secondary-button file-button" for="importAll">恢复备份</label>
-            <input id="importAll" type="file" accept="application/json,.json" />
-          </div>
+          <div class="backup-actions"><button class="secondary-button" id="exportAll" type="button">导出全部数据</button><label class="secondary-button file-button" for="importAll">恢复备份</label><input id="importAll" type="file" accept="application/json,.json" /></div>
           <p class="data-message" id="dataMessage" role="status"></p>
         </section>
 
-        <section class="about-card">
-          <div class="about-icon" aria-hidden="true">⌂</div>
-          <div>
-            <h2>这是一个公开网页 App</h2>
-            <p>不需要账号，也没有服务器数据库。网页代码公开，但你填写的体重、饮食和备注只保存在当前浏览器里。</p>
+        <section class="more-section" aria-labelledby="moreTitle">
+          <div class="section-heading"><div><p class="section-kicker">DETAILS</p><h2 id="moreTitle">需要时再打开完整记录</h2></div></div>
+          <div class="detail-links">
+            <a href="./modules/checkin/"><strong>餐单趋势</strong><span>计划、历史和体重曲线 ›</span></a>
+            <a href="./modules/weight-log/"><strong>称重记录</strong><span>14 天统计、带壳补录 ›</span></a>
+            <a href="./modules/dinner/"><strong>晚饭历史</strong><span>查看过去的净差值 ›</span></a>
+            <a href="./modules/loop/"><strong>循环规则</strong><span>查看三日完整说明 ›</span></a>
           </div>
         </section>
+
+        <section class="about-card"><div class="about-icon" aria-hidden="true">⌂</div><div><h2>这是一个公开网页 App</h2><p>不需要账号，也没有服务器数据库。网页代码公开，但你填写的体重、饮食和备注只保存在当前浏览器里。</p></div></section>
       </main>
     </div>
 
@@ -110,18 +174,13 @@
         <button class="dialog-close" value="close" aria-label="关闭">×</button>
         <div class="dialog-mark" aria-hidden="true">↗</div>
         <h2>添加到 iPhone 主屏幕</h2>
-        <ol>
-          <li><span>1</span><p>用 <strong>Safari</strong> 打开本应用。</p></li>
-          <li><span>2</span><p>点击底部的 <strong>分享</strong> 按钮。</p></li>
-          <li><span>3</span><p>向下滑动，选择 <strong>添加到主屏幕</strong>。</p></li>
-          <li><span>4</span><p>点击右上角 <strong>添加</strong>。</p></li>
-        </ol>
+        <ol><li><span>1</span><p>用 <strong>Safari</strong> 打开本应用。</p></li><li><span>2</span><p>点击底部的 <strong>分享</strong> 按钮。</p></li><li><span>3</span><p>向下滑动，选择 <strong>添加到主屏幕</strong>。</p></li><li><span>4</span><p>点击右上角 <strong>添加</strong>。</p></li></ol>
         <p class="install-tip">如果从微信打开，请先从右上角菜单转到 Safari。</p>
         <button class="primary-button" value="close">知道了</button>
       </form>
     </dialog>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="./app.js?v=2" defer></script>
+    <script src="./app.js?v=3" defer></script>
   </body>
 </html>
